@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💰 المحفظة الذكية v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+--primary:#2563eb;
+--primary-dark:#1e40af;
+--primary-light:#3b82f6;
+--success:#10b981;
+--success-dark:#059669;
+--danger:#ef4444;
+--danger-dark:#dc2626;
+--warning:#f59e0b;
+--warning-dark:#d97706;
+--info:#06b6d4;
+--dark:#0f172a;
+--gray-50:#f9fafb;
+--gray-100:#f3f4f6;
+--gray-200:#e5e7eb;
+--gray-300:#d1d5db;
+--gray-600:#4b5563;
+--gray-700:#374151;
+--gray-900:#111827;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:'Almarai','IBM Plex Sans Arabic',sans-serif;
+background:#f8fafc;
+color:var(--dark);
+line-height:1.6;
+padding-bottom:100px;
+overflow-x:hidden;
+}
+
+/* ═══ Header ═══ */
+.header{
+background:linear-gradient(135deg,#1e40af 0%,#3b82f6 50%,#06b6d4 100%);
+padding:24px 20px 32px;
+position:relative;
+overflow:hidden;
+box-shadow:0 10px 40px rgba(37,99,235,0.3);
+}
+
+.header::before{
+content:'';
+position:absolute;
+top:-50%;
+right:-20%;
+width:140%;
+height:200%;
+background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%);
+animation:headerGlow 10s ease-in-out infinite;
+}
+
+@keyframes headerGlow{
+0%,100%{transform:rotate(0deg) scale(1)}
+50%{transform:rotate(180deg) scale(1.1)}
+}
+
+.header-content{position:relative;z-index:1;max-width:1200px;margin:0 auto}
+
+.brand{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+
+.brand-icon{
+width:64px;
+height:64px;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(20px);
+border-radius:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+border:2px solid rgba(255,255,255,0.3);
+box-shadow:0 8px 32px rgba(0,0,0,0.1);
+}
+
+.brand-text h1{
+font-size:1.8rem;
+font-weight:800;
+color:white;
+text-shadow:2px 4px 8px rgba(0,0,0,0.2);
+letter-spacing:-0.5px;
+}
+
+.brand-text p{
+font-size:0.9rem;
+color:rgba(255,255,255,0.85);
+font-weight:300;
+margin-top:2px;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:12px;
+margin-top:20px;
+}
+
+.stat-card{
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(20px);
+padding:20px 16px;
+border-radius:16px;
+border:1px solid rgba(255,255,255,0.25);
+text-align:center;
+transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.stat-card:hover{
+background:rgba(255,255,255,0.25);
+transform:translateY(-4px);
+box-shadow:0 12px 32px rgba(0,0,0,0.15);
+}
+
+.stat-icon{font-size:1.4rem;display:block;margin-bottom:8px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1))}
+.stat-label{font-size:0.75rem;color:rgba(255,255,255,0.9);font-weight:400;display:block;margin-bottom:6px}
+.stat-value{font-size:1.6rem;font-weight:800;color:white;direction:ltr;text-shadow:0 2px 8px rgba(0,0,0,0.2)}
+
+.stat-card.highlight{
+background:linear-gradient(135deg,rgba(16,185,129,0.3),rgba(6,182,212,0.3));
+border:2px solid rgba(255,255,255,0.4);
+}
+
+/* ═══ Container ═══ */
+.container{max-width:1000px;margin:-20px auto 0;padding:0 20px}
+
+.page{display:none;opacity:0;transform:translateY(20px);transition:all 0.4s ease}
+.page.active{display:block;opacity:1;transform:translateY(0)}
+
+/* ═══ Cards ═══ */
+.card{
+background:white;
+border-radius:20px;
+padding:28px;
+margin-bottom:20px;
+box-shadow:0 1px 3px rgba(0,0,0,0.05),0 10px 40px rgba(0,0,0,0.03);
+border:1px solid var(--gray-200);
+transition:all 0.3s ease;
+}
+
+.card:hover{
+box-shadow:0 4px 12px rgba(0,0,0,0.08),0 20px 60px rgba(0,0,0,0.05);
+border-color:var(--gray-300);
+}
+
+.card-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+padding-bottom:16px;
+border-bottom:2px solid var(--gray-100);
+}
+
+.card-title{
+font-size:1.3rem;
+font-weight:700;
+color:var(--dark);
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.card-title i{font-size:1.5rem;color:var(--primary)}
+
+/* ═══ Income Display ═══ */
+.income-display{
+background:linear-gradient(135deg,#10b981 0%,#059669 100%);
+border-radius:20px;
+padding:32px 24px;
+text-align:center;
+box-shadow:0 10px 40px rgba(16,185,129,0.3);
+margin-bottom:24px;
+position:relative;
+overflow:hidden;
+}
+
+.income-display::before{
+content:'';
+position:absolute;
+top:-50%;
+right:-50%;
+width:200%;
+height:200%;
+background:radial-gradient(circle,rgba(255,255,255,0.2),transparent 60%);
+}
+
+.income-display-content{position:relative;z-index:1}
+
+.income-label{
+font-size:0.85rem;
+color:rgba(255,255,255,0.9);
+font-weight:300;
+display:block;
+margin-bottom:8px;
+text-transform:uppercase;
+letter-spacing:1px;
+}
+
+.income-amount{
+font-size:3rem;
+font-weight:900;
+color:white;
+direction:ltr;
+text-shadow:0 4px 12px rgba(0,0,0,0.2);
+margin-bottom:12px;
+}
+
+.income-actions{
+display:flex;
+gap:12px;
+justify-content:center;
+margin-top:16px;
+}
+
+/* ═══ Forms ═══ */
+.form-group{margin-bottom:20px}
+
+.form-label{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:0.9rem;
+font-weight:600;
+color:var(--dark);
+margin-bottom:10px;
+}
+
+.form-label i{color:var(--primary);font-size:1rem}
+
+input,select,textarea{
+width:100%;
+padding:14px 18px;
+border:2px solid var(--gray-200);
+border-radius:12px;
+font-size:1rem;
+font-family:inherit;
+transition:all 0.3s ease;
+outline:none;
+background:white;
+color:var(--dark);
+}
+
+input:focus,select:focus,textarea:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 4px rgba(37,99,235,0.1);
+}
+
+textarea{min-height:100px;resize:vertical}
+
+/* ═══ Buttons ═══ */
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+padding:14px 28px;
+border:none;
+border-radius:12px;
+font-size:1rem;
+font-weight:600;
+font-family:inherit;
+cursor:pointer;
+transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+position:relative;
+overflow:hidden;
+}
+
+.btn::before{
+content:'';
+position:absolute;
+top:50%;
+left:50%;
+width:0;
+height:0;
+border-radius:50%;
+background:rgba(255,255,255,0.3);
+transform:translate(-50%,-50%);
+transition:width 0.6s,height 0.6s;
+}
+
+.btn:hover::before{width:300px;height:300px}
+.btn:active{transform:scale(0.98)}
+
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white}
+.btn-success{background:linear-gradient(135deg,var(--success),var(--success-dark));color:white}
+.btn-danger{background:linear-gradient(135deg,var(--danger),var(--danger-dark));color:white}
+.btn-warning{background:linear-gradient(135deg,var(--warning),var(--warning-dark));color:white}
+.btn-info{background:linear-gradient(135deg,var(--info),#0891b2);color:white}
+.btn-light{background:var(--gray-100);color:var(--dark);border:2px solid var(--gray-300)}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+
+.btn-sm{padding:10px 20px;font-size:0.875rem}
+.btn-lg{padding:18px 36px;font-size:1.1rem}
+.btn-block{width:100%}
+
+/* ═══ Operation Row ═══ */
+.op-row{
+background:linear-gradient(135deg,var(--gray-50) 0%,white 100%);
+border:2px solid var(--gray-200);
+border-radius:16px;
+padding:24px;
+margin-bottom:16px;
+position:relative;
+transition:all 0.3s ease;
+}
+
+.op-row::before{
+content:'';
+position:absolute;
+right:0;
+top:0;
+bottom:0;
+width:6px;
+border-radius:0 16px 16px 0;
+background:var(--primary);
+}
+
+.op-row.expense::before{background:linear-gradient(180deg,var(--danger),var(--danger-dark))}
+.op-row.debt::before{background:linear-gradient(180deg,var(--warning),var(--warning-dark))}
+
+.op-row:hover{
+background:white;
+box-shadow:0 8px 24px rgba(0,0,0,0.08);
+transform:translateX(-4px);
+border-color:var(--primary);
+}
+
+.op-actions{
+display:flex;
+gap:12px;
+margin-top:16px;
+flex-wrap:wrap;
+}
+
+/* ═══ Navigation ═══ */
+.nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:var(--dark);
+border-radius:30px;
+padding:12px 16px;
+display:flex;
+gap:8px;
+box-shadow:0 12px 48px rgba(0,0,0,0.4);
+z-index:1000;
+backdrop-filter:blur(20px);
+}
+
+.nav-item{
+flex:1;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:6px;
+padding:14px 20px;
+color:rgba(255,255,255,0.6);
+cursor:pointer;
+border-radius:20px;
+transition:all 0.3s ease;
+position:relative;
+min-width:80px;
+}
+
+.nav-item::before{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,var(--primary),var(--info));
+border-radius:20px;
+opacity:0;
+transition:opacity 0.3s;
+}
+
+.nav-item:hover{color:rgba(255,255,255,0.9)}
+
+.nav-item.active{
+color:white;
+background:rgba(37,99,235,0.15);
+}
+
+.nav-item.active::before{opacity:0.3}
+
+.nav-icon{font-size:1.5rem;position:relative;z-index:1}
+.nav-label{font-size:0.7rem;font-weight:600;position:relative;z-index:1;white-space:nowrap}
+
+/* ═══ Modal ═══ */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(15,23,42,0.85);
+backdrop-filter:blur(10px);
+z-index:2000;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.modal.show{display:flex;animation:modalFade 0.3s ease}
+
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+
+.modal-content{
+background:white;
+border-radius:24px;
+padding:32px;
+max-width:540px;
+width:100%;
+max-height:90vh;
+overflow-y:auto;
+box-shadow:0 24px 96px rgba(0,0,0,0.3);
+animation:modalSlide 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes modalSlide{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+padding-bottom:16px;
+border-bottom:2px solid var(--gray-100);
+}
+
+.modal-title{font-size:1.5rem;font-weight:700;color:var(--dark)}
+
+.modal-close{
+width:44px;
+height:44px;
+border-radius:50%;
+background:var(--gray-100);
+border:none;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all 0.3s;
+color:var(--gray-600);
+font-size:1.2rem;
+}
+
+.modal-close:hover{
+background:var(--danger);
+color:white;
+transform:rotate(90deg);
+}
+
+/* ═══ Loading ═══ */
+.loading{
+position:fixed;
+inset:0;
+background:rgba(15,23,42,0.95);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:white;
+}
+
+.spinner{
+width:64px;
+height:64px;
+border:4px solid rgba(255,255,255,0.2);
+border-top-color:white;
+border-radius:50%;
+animation:spin 0.8s linear infinite;
+margin-bottom:20px;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.loading-text{font-size:1.1rem;font-weight:600;text-align:center}
+
+/* ═══ Badge ═══ */
+.badge{
+display:inline-flex;
+align-items:center;
+gap:5px;
+padding:6px 14px;
+border-radius:20px;
+font-size:0.75rem;
+font-weight:600;
+}
+
+.badge-primary{background:rgba(37,99,235,0.1);color:var(--primary-dark)}
+.badge-success{background:rgba(16,185,129,0.1);color:var(--success-dark)}
+.badge-danger{background:rgba(239,68,68,0.1);color:var(--danger-dark)}
+.badge-warning{background:rgba(245,158,11,0.1);color:var(--warning-dark)}
+.badge-info{background:rgba(6,182,212,0.1);color:#0891b2}
+
+/* ═══ Empty State ═══ */
+.empty{
+text-align:center;
+padding:60px 20px;
+color:var(--gray-600);
+}
+
+.empty-icon{
+font-size:5rem;
+margin-bottom:20px;
+opacity:0.2;
+animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-12px)}
+}
+
+.empty-title{
+font-size:1.4rem;
+font-weight:700;
+margin-bottom:8px;
+color:var(--dark);
+}
+
+.empty-text{font-size:1rem;color:var(--gray-600)}
+
+/* ═══ Image Preview ═══ */
+.img-preview{margin-top:12px}
+
+.img-preview img{
+max-width:220px;
+height:160px;
+object-fit:cover;
+border-radius:12px;
+border:2px solid var(--gray-200);
+cursor:pointer;
+transition:all 0.3s;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.img-preview img:hover{
+transform:scale(1.05);
+box-shadow:0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* ═══ Report Card ═══ */
+.report-card{
+background:white;
+border-radius:20px;
+padding:24px;
+margin-bottom:20px;
+border-right:5px solid var(--primary);
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+transition:all 0.3s;
+}
+
+.report-card:hover{
+box-shadow:0 8px 32px rgba(0,0,0,0.1);
+transform:translateX(-6px);
+}
+
+.report-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+}
+
+.report-date{
+font-weight:700;
+font-size:1.1rem;
+color:var(--primary);
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.report-net{
+font-weight:900;
+font-size:1.6rem;
+direction:ltr;
+}
+
+.report-net.positive{color:var(--success)}
+.report-net.negative{color:var(--danger)}
+
+.report-stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-bottom:16px;
+}
+
+.report-stat{
+background:var(--gray-50);
+padding:14px;
+border-radius:12px;
+text-align:center;
+}
+
+.report-stat-label{
+font-size:0.75rem;
+color:var(--gray-600);
+font-weight:500;
+display:block;
+margin-bottom:6px;
+}
+
+.report-stat-value{
+font-size:1.2rem;
+font-weight:700;
+color:var(--dark);
+direction:ltr;
+}
+
+/* ═══ Responsive ═══ */
+@media(max-width:640px){
+.stats-grid{grid-template-columns:1fr}
+.nav{left:20px;right:20px;transform:none}
+.nav-item{min-width:60px;padding:12px 8px}
+.nav-label{font-size:0.65rem}
+.income-amount{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+<div class="header-content">
+<div class="brand">
+<div class="brand-icon">💰</div>
+<div class="brand-text">
+<h1>المحفظة الذكية</h1>
+<p id="current-date">جاري التحميل...</p>
+</div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-card">
+<span class="stat-icon">💵</span>
+<span class="stat-label">إجمالي الدخل</span>
+<span class="stat-value" id="stat-income">0.00</span>
+</div>
+<div class="stat-card">
+<span class="stat-icon">💸</span>
+<span class="stat-label">إجمالي المصاريف</span>
+<span class="stat-value" id="stat-expenses">0.00</span>
+</div>
+<div class="stat-card">
+<span class="stat-icon">🧾</span>
+<span class="stat-label">إجمالي الديون</span>
+<span class="stat-value" id="stat-debts">0.00</span>
+</div>
+<div class="stat-card highlight">
+<span class="stat-icon">✨</span>
+<span class="stat-label">الصافي الكلي</span>
+<span class="stat-value" id="stat-net">0.00</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Container -->
+<div class="container">
+
+<!-- Page: Add -->
+<div id="page-add" class="page active">
+
+<!-- Income Section -->
+<div id="income-section">
+<!-- Income Display (when exists) -->
+<div class="income-display" id="income-display" style="display:none">
+<div class="income-display-content">
+<span class="income-label">الدخل اليومي</span>
+<div class="income-amount" id="income-value">0.00</div>
+<div class="income-actions">
+<button class="btn btn-light btn-sm" onclick="editIncome()">
+<i class="fas fa-edit"></i> تعديل الدخل
+</button>
+</div>
+</div>
+</div>
+
+<!-- Income Input (when not exists) -->
+<div class="card" id="income-input">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-hand-holding-dollar"></i>
+الدخل اليومي
+</h3>
+</div>
+<div class="form-group">
+<label class="form-label">
+<i class="fas fa-coins"></i>
+المبلغ
+</label>
+<input type="number" id="daily-income" placeholder="0.00" step="0.01" min="0">
+</div>
+<div class="form-group">
+<label class="form-label">
+<i class="fas fa-note-sticky"></i>
+ملاحظات (اختياري)
+</label>
+<textarea id="daily-notes" placeholder="أي ملاحظات إضافية..."></textarea>
+</div>
+<button class="btn btn-success btn-block btn-lg" onclick="saveDailyIncome()">
+<i class="fas fa-check-circle"></i>
+حفظ الدخل اليومي
+</button>
+</div>
+</div>
+
+<!-- Operations Section -->
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-list-check"></i>
+العمليات اليومية
+</h3>
+<button class="btn btn-primary btn-sm" onclick="addOperation()">
+<i class="fas fa-plus"></i>
+إضافة عملية
+</button>
+</div>
+<div id="operations-list"></div>
+</div>
+
+<button class="btn btn-success btn-block btn-lg" onclick="saveOperations()" id="save-ops-btn" style="display:none">
+<i class="fas fa-cloud-arrow-up"></i>
+حفظ جميع العمليات
+</button>
+
+<!-- Today Operations (editable) -->
+<div id="today-ops-section" style="display:none">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-history"></i>
+عمليات اليوم الحالي
+</h3>
+<span class="badge badge-info" id="today-ops-count">0</span>
+</div>
+<div id="today-operations-list"></div>
+</div>
+</div>
+
+</div>
+
+<!-- Page: Reports -->
+<div id="page-reports" class="page">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-chart-pie"></i>
+التقارير المالية
+</h3>
+</div>
+<div class="form-group">
+<label class="form-label">
+<i class="fas fa-calendar-range"></i>
+الفترة الزمنية
+</label>
+<select id="report-period" onchange="loadReports()">
+<option value="7">آخر 7 أيام</option>
+<option value="15">آخر 15 يوم</option>
+<option value="30" selected>آخر شهر</option>
+<option value="60">آخر شهرين</option>
+<option value="90">آخر 3 أشهر</option>
+<option value="365">السنة الكاملة</option>
+</select>
+</div>
+<button class="btn btn-info btn-block" onclick="loadReports()">
+<i class="fas fa-arrows-rotate"></i>
+تحديث التقرير
+</button>
+</div>
+
+<div id="reports-container"></div>
+</div>
+
+<!-- Page: Operations -->
+<div id="page-operations" class="page">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-receipt"></i>
+سجل جميع العمليات
+</h3>
+<span class="badge badge-primary" id="all-ops-count">0</span>
+</div>
+<div class="form-group">
+<label class="form-label">
+<i class="fas fa-magnifying-glass"></i>
+البحث
+</label>
+<input type="text" id="search-ops" placeholder="ابحث عن عملية..." oninput="filterAllOps()">
+</div>
+<div class="form-group">
+<label class="form-label">
+<i class="fas fa-filter"></i>
+التصفية
+</label>
+<select id="filter-type" onchange="filterAllOps()">
+<option value="">جميع العمليات</option>
+<option value="مصروف">المصاريف فقط</option>
+<option value="دين">الديون فقط</option>
+</select>
+</div>
+</div>
+
+<div id="all-operations-container"></div>
+</div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<div class="nav">
+<div class="nav-item active" onclick="switchPage('page-add',this)">
+<i class="nav-icon fas fa-plus-circle"></i>
+<span class="nav-label">إضافة</span>
+</div>
+<div class="nav-item" onclick="switchPage('page-reports',this)">
+<i class="nav-icon fas fa-chart-line"></i>
+<span class="nav-label">التقارير</span>
+</div>
+<div class="nav-item" onclick="switchPage('page-operations',this)">
+<i class="nav-icon fas fa-list"></i>
+<span class="nav-label">العمليات</span>
+</div>
+</div>
+
+<!-- Modal: Edit Operation -->
+<div id="edit-modal" class="modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3 class="modal-title">✏️ تعديل العملية</h3>
+<button class="modal-close" onclick="closeModal('edit-modal')">
+<i class="fas fa-times"></i>
+</button>
+</div>
+<input type="hidden" id="edit-id">
+<input type="hidden" id="edit-date">
+<div class="form-group">
+<label class="form-label"><i class="fas fa-dollar-sign"></i> المبلغ</label>
+<input type="number" id="edit-amount" step="0.01" min="0">
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-pen"></i> الوصف</label>
+<input type="text" id="edit-desc">
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-tag"></i> النوع</label>
+<select id="edit-type">
+<option value="مصروف">مصروف</option>
+<option value="دين">دين</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-layer-group"></i> الفئة</label>
+<select id="edit-category">
+<option value="طعام">🍔 طعام</option>
+<option value="مواصلات">🚗 مواصلات</option>
+<option value="فواتير">📄 فواتير</option>
+<option value="تسوق">🛒 تسوق</option>
+<option value="ترفيه">🎮 ترفيه</option>
+<option value="صحة">💊 صحة</option>
+<option value="تعليم">📚 تعليم</option>
+<option value="أخرى">📌 أخرى</option>
+</select>
+</div>
+<button class="btn btn-success btn-block btn-lg" onclick="saveEditOperation()">
+<i class="fas fa-check-circle"></i>
+حفظ التعديلات
+</button>
+</div>
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbzAqimXYXmervt8N_4VBP3mZiPpVMWX0spt0qGuOnnaBN2Fj0aIxzifVEcLWI5ldrwwGA/exec";
+
+let appData={daily:[],operations:[],summary:[],stats:{},today:{}};
+let tempOperations=[];
+let opCounter=0;
+
+// Initialize
+window.onload=()=>{
+updateDateTime();
+loadData();
+setInterval(updateDateTime,60000);
+};
+
+function updateDateTime(){
+const now=new Date();
+document.getElementById('current-date').textContent=
+now.toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+// Load Data
+async function loadData(){
+showLoading('جاري جلب البيانات...');
+try{
+const res=await fetch(API_URL);
+const json=await res.json();
+
+console.log('API Response:',json);
+
+if(json.success){
+appData=json.data;
+updateStatistics();
+updateIncomeSection();
+loadTodayOperations();
+}else{
+alert('خطأ: '+json.error);
+}
+}catch(e){
+console.error('Load Error:',e);
+alert('فشل الاتصال بالخادم');
+}
+hideLoading();
+}
+
+// Update Statistics
+function updateStatistics(){
+const s=appData.stats;
+document.getElementById('stat-income').textContent=fmt(s.totalIncome||0);
+document.getElementById('stat-expenses').textContent=fmt(s.totalExpenses||0);
+document.getElementById('stat-debts').textContent=fmt(s.totalDebts||0);
+
+const net=s.totalNet||0;
+const netEl=document.getElementById('stat-net');
+netEl.textContent=fmt(net);
+netEl.style.color=net>=0?'#10b981':'#ef4444';
+}
+
+// Update Income Section
+function updateIncomeSection(){
+const today=appData.today||{};
+
+if(today.hasIncome && today.income){
+// عرض البطاقة الخضراء وإخفاء النموذج بالكامل
+document.getElementById('income-display').style.display='block';
+document.getElementById('income-input').style.display='none';
+document.getElementById('income-value').textContent=fmt(today.income.income);
+}else{
+// إخفاء البطاقة الخضراء وعرض النموذج
+document.getElementById('income-display').style.display='none';
+document.getElementById('income-input').style.display='block';
+}
+}
+
+// Save Daily Income
+async function saveDailyIncome(){
+const income=parseFloat(document.getElementById('daily-income').value);
+const notes=document.getElementById('daily-notes').value.trim();
+
+if(!income||income<=0){
+alert('يرجى إدخال مبلغ الدخل اليومي');
+return;
+}
+
+showLoading('جاري حفظ الدخل...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({
+action:'saveDailyIncome',
+date:new Date().toISOString().split('T')[0],
+income:income,
+notes:notes
+})
+});
+
+hideLoading();
+alert('✅ تم حفظ الدخل اليومي بنجاح!');
+document.getElementById('daily-income').value='';
+document.getElementById('daily-notes').value='';
+setTimeout(loadData,1000);
+}catch(e){
+hideLoading();
+alert('خطأ في الحفظ');
+}
+}
+
+// Edit Income
+function editIncome(){
+const today=appData.today||{};
+if(today.income){
+// ملء القيم
+document.getElementById('daily-income').value=today.income.income;
+document.getElementById('daily-notes').value=today.income.notes||'';
+
+// إخفاء البطاقة الخضراء وإظهار النموذج
+document.getElementById('income-display').style.display='none';
+document.getElementById('income-input').style.display='block';
+
+// تغيير الزر إلى "تحديث الدخل"
+const saveBtn=document.querySelector('#income-input .btn-lg');
+saveBtn.innerHTML='<i class="fas fa-check-circle"></i> تحديث الدخل اليومي';
+saveBtn.onclick=updateDailyIncome;
+}
+}
+
+// Update Daily Income
+async function updateDailyIncome(){
+const income=parseFloat(document.getElementById('daily-income').value);
+const notes=document.getElementById('daily-notes').value.trim();
+
+if(!income||income<=0){
+alert('يرجى إدخال مبلغ الدخل');
+return;
+}
+
+showLoading('جاري تحديث الدخل...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({
+action:'updateDailyIncome',
+date:new Date().toISOString().split('T')[0],
+income:income,
+notes:notes
+})
+});
+
+hideLoading();
+alert('✅ تم تحديث الدخل بنجاح!');
+
+// إعادة الزر إلى حالته الأصلية
+const saveBtn=document.querySelector('#income-input .btn-lg');
+saveBtn.innerHTML='<i class="fas fa-check-circle"></i> حفظ الدخل اليومي';
+saveBtn.onclick=saveDailyIncome;
+
+// إفراغ الحقول
+document.getElementById('daily-income').value='';
+document.getElementById('daily-notes').value='';
+
+setTimeout(loadData,1000);
+}catch(e){
+hideLoading();
+alert('خطأ في التحديث');
+}
+}
+
+// Add Operation
+function addOperation(){
+opCounter++;
+const id='temp-'+Date.now()+'-'+opCounter;
+
+const div=document.createElement('div');
+div.className='op-row';
+div.id=id;
+div.innerHTML=`
+<div class="form-group">
+<label class="form-label"><i class="fas fa-dollar-sign"></i> المبلغ</label>
+<input type="number" class="op-amount" placeholder="0.00" step="0.01" min="0">
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-pen"></i> الوصف</label>
+<input type="text" class="op-desc" placeholder="وصف العملية...">
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-tag"></i> النوع</label>
+<select class="op-type" onchange="updateOpStyle('${id}',this.value)">
+<option value="مصروف">💸 مصروف</option>
+<option value="دين">🧾 دين</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-layer-group"></i> الفئة</label>
+<select class="op-category">
+<option value="طعام">🍔 طعام</option>
+<option value="مواصلات">🚗 مواصلات</option>
+<option value="فواتير">📄 فواتير</option>
+<option value="تسوق">🛒 تسوق</option>
+<option value="ترفيه">🎮 ترفيه</option>
+<option value="صحة">💊 صحة</option>
+<option value="تعليم">📚 تعليم</option>
+<option value="أخرى">📌 أخرى</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fas fa-image"></i> صورة الوصل (اختياري)</label>
+<input type="file" class="op-img" accept="image/*" onchange="previewImg(this,'${id}')">
+<div id="prev-${id}" class="img-preview" style="display:none">
+<img onclick="window.open(this.src,'_blank')">
+</div>
+</div>
+<div class="op-actions">
+<button class="btn btn-danger btn-sm" onclick="removeOp('${id}')">
+<i class="fas fa-trash"></i> حذف
+</button>
+</div>
+`;
+
+document.getElementById('operations-list').appendChild(div);
+document.getElementById('save-ops-btn').style.display='block';
+}
+
+function updateOpStyle(id,type){
+const el=document.getElementById(id);
+el.classList.remove('expense','debt');
+if(type==='مصروف')el.classList.add('expense');
+if(type==='دين')el.classList.add('debt');
+}
+
+function removeOp(id){
+if(confirm('حذف العملية؟')){
+document.getElementById(id).remove();
+if(document.querySelectorAll('#operations-list .op-row').length===0){
+document.getElementById('save-ops-btn').style.display='none';
+}
+}
+}
+
+function previewImg(input,id){
+if(input.files&&input.files[0]){
+const reader=new FileReader();
+reader.onload=e=>{
+const prev=document.getElementById('prev-'+id);
+prev.querySelector('img').src=e.target.result;
+prev.style.display='block';
+};
+reader.readAsDataURL(input.files[0]);
+}
+}
+
+// Save Operations
+async function saveOperations(){
+const rows=document.querySelectorAll('#operations-list .op-row');
+
+if(rows.length===0){
+alert('لا توجد عمليات للحفظ');
+return;
+}
+
+const ops=[];
+
+for(let row of rows){
+const amount=parseFloat(row.querySelector('.op-amount').value);
+const desc=row.querySelector('.op-desc').value.trim();
+const type=row.querySelector('.op-type').value;
+const category=row.querySelector('.op-category').value;
+const imgInput=row.querySelector('.op-img');
+
+if(!amount||amount<=0||!desc){
+alert('يرجى ملء جميع الحقول');
+return;
+}
+
+let img='';
+if(imgInput.files&&imgInput.files[0]){
+img=await toBase64(imgInput.files[0]);
+}
+
+ops.push({amount,description:desc,type,category,image:img});
+}
+
+showLoading('جاري حفظ العمليات...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({
+action:'saveOperations',
+date:new Date().toISOString().split('T')[0],
+operations:ops
+})
+});
+
+hideLoading();
+alert(`✅ تم حفظ ${ops.length} عملية بنجاح!`);
+document.getElementById('operations-list').innerHTML='';
+document.getElementById('save-ops-btn').style.display='none';
+opCounter=0;
+setTimeout(loadData,1000);
+}catch(e){
+hideLoading();
+alert('خطأ في الحفظ');
+}
+}
+
+function toBase64(file){
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.onerror=reject;
+reader.readAsDataURL(file);
+});
+}
+
+// Load Today Operations
+function loadTodayOperations(){
+const today=appData.today||{};
+const ops=today.operations||[];
+
+if(ops.length>0){
+document.getElementById('today-ops-section').style.display='block';
+document.getElementById('today-ops-count').textContent=ops.length;
+
+let html='';
+ops.forEach(op=>{
+html+=`
+<div class="op-row ${op.type==='مصروف'?'expense':'debt'}">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+<div style="flex:1">
+<strong style="font-size:1.1rem;display:block;margin-bottom:8px">${op.description}</strong>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge badge-${op.type==='مصروف'?'danger':'warning'}">${op.type}</span>
+<span class="badge badge-info">${op.category}</span>
+</div>
+</div>
+<div style="font-size:1.8rem;font-weight:900;color:${op.type==='مصروف'?'var(--danger)':'var(--warning)'}">
+${fmt(op.amount)}
+</div>
+</div>
+${op.image?`<div class="img-preview"><img src="${op.image}" onclick="window.open(this.src,'_blank')"></div>`:''}
+<div class="op-actions">
+<button class="btn btn-info btn-sm" onclick="editOp('${op.id}','${op.date}',${op.amount},'${op.description}','${op.type}','${op.category}')">
+<i class="fas fa-edit"></i> تعديل
+</button>
+<button class="btn btn-danger btn-sm" onclick="deleteOp('${op.id}','${op.date}')">
+<i class="fas fa-trash"></i> حذف
+</button>
+</div>
+</div>
+`;
+});
+
+document.getElementById('today-operations-list').innerHTML=html;
+}else{
+document.getElementById('today-ops-section').style.display='none';
+}
+}
+
+// Edit Operation
+function editOp(id,date,amount,desc,type,category){
+document.getElementById('edit-id').value=id;
+document.getElementById('edit-date').value=date;
+document.getElementById('edit-amount').value=amount;
+document.getElementById('edit-desc').value=desc;
+document.getElementById('edit-type').value=type;
+document.getElementById('edit-category').value=category;
+openModal('edit-modal');
+}
+
+async function saveEditOperation(){
+const id=document.getElementById('edit-id').value;
+const date=document.getElementById('edit-date').value;
+const amount=parseFloat(document.getElementById('edit-amount').value);
+const desc=document.getElementById('edit-desc').value;
+const type=document.getElementById('edit-type').value;
+const category=document.getElementById('edit-category').value;
+
+if(!amount||!desc){
+alert('يرجى ملء جميع الحقول');
+return;
+}
+
+showLoading('جاري التحديث...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({
+action:'updateOperation',
+id,date,amount,description:desc,type,category
+})
+});
+
+hideLoading();
+closeModal('edit-modal');
+alert('✅ تم التحديث بنجاح!');
+setTimeout(loadData,1000);
+}catch(e){
+hideLoading();
+alert('خطأ في التحديث');
+}
+}
+
+// Delete Operation
+async function deleteOp(id,date){
+if(!confirm('هل تريد حذف هذه العملية؟'))return;
+
+showLoading('جاري الحذف...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({action:'deleteOperation',id,date})
+});
+
+hideLoading();
+alert('✅ تم الحذف بنجاح!');
+setTimeout(loadData,1000);
+}catch(e){
+hideLoading();
+alert('خطأ في الحذف');
+}
+}
+
+// Load Reports
+function loadReports(){
+const period=parseInt(document.getElementById('report-period').value);
+const container=document.getElementById('reports-container');
+
+if(!appData.daily||appData.daily.length<=1){
+container.innerHTML='<div class="empty"><div class="empty-icon"><i class="fas fa-chart-line"></i></div><h3 class="empty-title">لا توجد تقارير</h3><p class="empty-text">ابدأ بإضافة الدخل والعمليات</p></div>';
+return;
+}
+
+const now=new Date();
+let html='';
+let pIncome=0,pExpenses=0,pDebts=0;
+
+for(let i=appData.daily.length-1;i>=1;i--){
+const row=appData.daily[i];
+const date=row[0];
+const income=parseFloat(row[1])||0;
+
+const dayOps=appData.operations.filter(op=>op[1]===date);
+let dayExp=0,dayDebt=0;
+
+dayOps.forEach(op=>{
+const amt=parseFloat(op[2])||0;
+const type=op[4];
+if(type==='مصروف')dayExp+=amt;
+else if(type==='دين')dayDebt+=amt;
+});
+
+const dayNet=income-(dayExp+dayDebt);
+const recordDate=new Date(date);
+const diff=Math.floor((now-recordDate)/(1000*60*60*24));
+
+if(diff<=period){
+pIncome+=income;
+pExpenses+=dayExp;
+pDebts+=dayDebt;
+
+html+=`
+<div class="report-card">
+<div class="report-header">
+<span class="report-date"><i class="fas fa-calendar-day"></i> ${date}</span>
+<span class="report-net ${dayNet>=0?'positive':'negative'}">${dayNet>=0?'+':''}${fmt(dayNet)}</span>
+</div>
+<div class="report-stats">
+<div class="report-stat">
+<span class="report-stat-label">الدخل</span>
+<strong class="report-stat-value" style="color:var(--success)">${fmt(income)}</strong>
+</div>
+<div class="report-stat">
+<span class="report-stat-label">المصاريف</span>
+<strong class="report-stat-value" style="color:var(--danger)">${fmt(dayExp)}</strong>
+</div>
+<div class="report-stat">
+<span class="report-stat-label">الديون</span>
+<strong class="report-stat-value" style="color:var(--warning)">${fmt(dayDebt)}</strong>
+</div>
+</div>
+${dayOps.length>1?`
+<button class="btn btn-light btn-sm btn-block" onclick="toggleDetails('det-${i}')">
+<i class="fas fa-eye"></i> عرض التفاصيل (${dayOps.length-1})
+</button>
+<div id="det-${i}" style="display:none;margin-top:16px;padding-top:16px;border-top:2px dashed var(--gray-200)">
+${dayOps.slice(1).map(op=>`
+<div style="display:flex;justify-content:space-between;padding:12px;background:var(--gray-50);border-radius:12px;margin-bottom:8px">
+<div>
+<div style="font-weight:600;margin-bottom:4px">${op[3]}</div>
+<div><span class="badge badge-${op[4]==='مصروف'?'danger':'warning'}">${op[4]}</span> <span class="badge badge-info">${op[5]}</span></div>
+</div>
+<strong style="font-size:1.2rem;color:${op[4]==='مصروف'?'var(--danger)':'var(--warning)'}">${fmt(op[2])}</strong>
+</div>
+`).join('')}
+<button class="btn btn-danger btn-sm btn-block" style="margin-top:12px" onclick="deleteDay('${date}')">
+<i class="fas fa-trash-can"></i> حذف اليوم بالكامل
+</button>
+</div>
+`:''}
+</div>
+`;
+}
+}
+
+const pNet=pIncome-(pExpenses+pDebts);
+
+html=`
+<div class="card" style="background:var(--gradient-1);color:white;border:none">
+<h3 style="margin-bottom:20px;font-size:1.4rem"><i class="fas fa-chart-pie"></i> ملخص الفترة</h3>
+<div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+<div class="stat-card"><span class="stat-label">الدخل</span><span class="stat-value">${fmt(pIncome)}</span></div>
+<div class="stat-card"><span class="stat-label">المصاريف</span><span class="stat-value">${fmt(pExpenses)}</span></div>
+<div class="stat-card"><span class="stat-label">الديون</span><span class="stat-value">${fmt(pDebts)}</span></div>
+<div class="stat-card highlight"><span class="stat-label">الصافي</span><span class="stat-value">${fmt(pNet)}</span></div>
+</div>
+</div>
+`+html;
+
+container.innerHTML=html||'<div class="empty"><div class="empty-icon"><i class="fas fa-calendar-times"></i></div><h3 class="empty-title">لا توجد بيانات</h3><p class="empty-text">لا توجد سجلات في هذه الفترة</p></div>';
+}
+
+function toggleDetails(id){
+const el=document.getElementById(id);
+el.style.display=el.style.display==='none'?'block':'none';
+}
+
+async function deleteDay(date){
+if(!confirm('هل تريد حذف هذا اليوم بالكامل (الدخل + جميع العمليات)?'))return;
+
+showLoading('جاري الحذف...');
+
+try{
+await fetch(API_URL,{
+method:'POST',
+mode:'no-cors',
+body:JSON.stringify({action:'deleteDay',date})
+});
+
+hideLoading();
+alert('✅ تم حذف اليوم بالكامل!');
+setTimeout(()=>{loadData();loadReports();},1000);
+}catch(e){
+hideLoading();
+alert('خطأ في الحذف');
+}
+}
+
+// Filter All Operations
+function filterAllOps(){
+const search=document.getElementById('search-ops').value.toLowerCase();
+const type=document.getElementById('filter-type').value;
+const container=document.getElementById('all-operations-container');
+
+if(!appData.operations||appData.operations.length<=1){
+container.innerHTML='<div class="empty"><div class="empty-icon"><i class="fas fa-inbox"></i></div><h3 class="empty-title">لا توجد عمليات</h3></div>';
+document.getElementById('all-ops-count').textContent='0';
+return;
+}
+
+let html='';
+let count=0;
+
+for(let i=appData.operations.length-1;i>=1;i--){
+const op=appData.operations[i];
+const desc=op[3].toLowerCase();
+const opType=op[4];
+
+if(type&&opType!==type)continue;
+if(search&&!desc.includes(search))continue;
+
+count++;
+
+html+=`
+<div class="op-row ${opType==='مصروف'?'expense':'debt'}">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+<div style="flex:1">
+<strong style="font-size:1.1rem;display:block;margin-bottom:8px">${op[3]}</strong>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge badge-${opType==='مصروف'?'danger':'warning'}">${opType}</span>
+<span class="badge badge-info">${op[5]}</span>
+<span class="badge badge-primary"><i class="fas fa-calendar"></i> ${op[1]}</span>
+</div>
+</div>
+<div style="font-size:1.6rem;font-weight:900;color:${opType==='مصروف'?'var(--danger)':'var(--warning)'}">
+${fmt(op[2])}
+</div>
+</div>
+${op[6]?`<div class="img-preview"><img src="${op[6]}" onclick="window.open(this.src,'_blank')"></div>`:''}
+<div class="op-actions">
+<button class="btn btn-info btn-sm" onclick="editOp('${op[0]}','${op[1]}',${op[2]},'${op[3]}','${opType}','${op[5]}')">
+<i class="fas fa-edit"></i> تعديل
+</button>
+<button class="btn btn-danger btn-sm" onclick="deleteOp('${op[0]}','${op[1]}')">
+<i class="fas fa-trash"></i> حذف
+</button>
+</div>
+</div>
+`;
+}
+
+document.getElementById('all-ops-count').textContent=count;
+container.innerHTML=html||'<div class="empty"><div class="empty-icon"><i class="fas fa-search"></i></div><h3 class="empty-title">لا توجد نتائج</h3><p class="empty-text">جرب تغيير معايير البحث</p></div>';
+}
+
+// Page Switching
+function switchPage(pageId,navItem){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+
+document.getElementById(pageId).classList.add('active');
+navItem.classList.add('active');
+
+if(pageId==='page-reports')loadReports();
+if(pageId==='page-operations')filterAllOps();
+}
+
+// Modal Functions
+function openModal(id){
+document.getElementById(id).classList.add('show');
+}
+
+function closeModal(id){
+document.getElementById(id).classList.remove('show');
+}
+
+// Loading
+function showLoading(msg){
+const div=document.createElement('div');
+div.id='loading';
+div.className='loading';
+div.innerHTML=`<div class="spinner"></div><div class="loading-text">${msg}</div>`;
+document.body.appendChild(div);
+}
+
+function hideLoading(){
+const el=document.getElementById('loading');
+if(el)el.remove();
+}
+
+// Format Currency
+function fmt(n){
+return parseFloat(n).toFixed(2);
+}
+</script>
+
+</body>
+</html>
+
